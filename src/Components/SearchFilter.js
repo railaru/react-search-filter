@@ -1,6 +1,13 @@
-import React, { Component } from 'react'
-import Fuse from 'fuse.js';
-import Card from './Card'
+import React, { Component } from 'react'        
+import Fuse                 from 'fuse.js';
+import axios                from 'axios'
+
+import Card                 from './Card'
+
+
+const  imageAddIncrement    = 12
+let    images               = 4
+let    page                 = 1
 
 
 export class SearchFilter extends Component {
@@ -9,45 +16,24 @@ export class SearchFilter extends Component {
         super()
 
         this.state = {
-            initialItems: [
-                {
-                    id: 0,
-                    title: "Define® polished chrome ingot switched sockets with twin USB outlets: FPCH580BK",    
-                    description: "Scolmore International Limited",    
-                    img: 'https://source.unsplash.com/random/400x300',
-                    link: 'https://www.google.com',                    
-                },             
-                {
-                    id: 1,
-                    title: "Reynaers Hi-Finity Sliding Door",    
-                    description: "HNS Aluminium",    
-                    img: 'https://source.unsplash.com/random/400x301',
-                    link: 'https://www.google.com',
-                },             
-                {
-                    id: 2,
-                    title: "Chestnut Strand woven parquet block bamboo flooring: F1072",    
-                    description: "The Bamboo Flooring Company",    
-                    img: 'https://source.unsplash.com/random/400x302',
-                    link: 'https://www.google.com',
-                },             
-                {
-                    id: 3,
-                    title: "006 Black Edition Ashdown : 520",    
-                    description: "HNS Aluminium",    
-                    img: 'https://source.unsplash.com/random/400x303',
-                    link: 'https://www.google.com',
-                },             
-                {
-                    id: 4,
-                    title: "Abbeydale Red Multi Brick",    
-                    description: "Wienerberger",    
-                    img: 'https://source.unsplash.com/random/400x304',
-                    link: 'https://www.google.com',
-                },             
-            ],
+            isLoading: false,
+            initialItems: [],
             SearchResult: []
         }
+    }
+
+    fetchImages() {
+        
+        this.setState({ isLoading: true })
+
+        axios.get(`https://picsum.photos/v2/list?page=${page}&limit=${images}`) 
+        .catch((error) => console.log(error))
+        .then((response) => {
+
+            this.setState({ initialItems: response.data })
+            this.setState({ isLoading: false })
+            this.setState({ SearchResult: this.state.initialItems })
+        })                    
     }
 
     filterList = (e) => {
@@ -60,8 +46,8 @@ export class SearchFilter extends Component {
             maxPatternLength: 32,
             minMatchCharLength: 1,
             keys: [
-              "title",
-              "description",
+              "author",
+              "height",
             ]
           };
           
@@ -77,7 +63,8 @@ export class SearchFilter extends Component {
     }
 
     componentDidMount() {
-        this.setState({ SearchResult: this.state.initialItems })
+
+        this.fetchImages()        
     }
 
     render() {
@@ -96,16 +83,14 @@ export class SearchFilter extends Component {
 
                 <div className='gallery-search-results'>
                     {
-                        SearchResult.map((item) => (
-                           <div key={item.id}>
-                               <Card
-                                    key={item.id}
-                                    title={item.title}
-                                    description={item.description}
-                                    img={item.img}
-                                    link={item.link}
-                               />                     
-                           </div>
+                        SearchResult.map((item) => (                        
+                            <Card
+                                key={item.id}
+                                title={item.author}
+                                description={item.height}
+                                img={item.download_url}
+                                link={item.url}
+                            />                                             
                         ))
                     }
                 </div>
