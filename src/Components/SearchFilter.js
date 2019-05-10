@@ -120,18 +120,18 @@ export default class SearchFilter extends Component {
                 />
                 <div className='gallery-search-input__bottom-border' />
 
-                <div className='gallery-search-results'>
+                <div className='gallery-search-results'>                    
                     {
                         SearchResult.map(({ id, name, tagline, image_url }) => (                        
                             <Card
-                                key={id}
-                                link={image_url}
-                                img={image_url}
-                                title={name}                                
-                                description={tagline}                                
+                                key         = {id}
+                                link        = {image_url}
+                                img         = {image_url}
+                                title       = {name}                                
+                                description = {tagline}                                
                             />                                             
                         ))
-                    }
+                    }                    
                 </div>
                 {
                     this.state.isLoading &&
